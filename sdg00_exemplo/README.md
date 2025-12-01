@@ -37,7 +37,8 @@ Explique brevemente:
 Link para visualização web:
 
 🔗 **Mapa Web:**
-[https://labgeolivre.github.io/sig_sdgs_2025/sdg00_exemplo/](https://labgeolivre.github.io/sig_sdgs_2025/sdg00_exemplo/)
+https://labgeolivre-ufpr.github.io/sig_sdgs_2025/sdg00_exemplo/
+
 
 > Cada aluno deve atualizar o link com o nome da própria pasta.
 

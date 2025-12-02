@@ -93,4 +93,4 @@ Feito cada procedimento para a geração das camadas:
 ```
 
 ## 7. Imagem Ilustrativa
-[TODO]
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/95310ea6-5d27-4985-91c4-7b06866299c9" />

@@ -80,8 +80,9 @@ Link para visualização web: [https://labgeolivreufpr.github.io/sig_sdgs_2025/s
 
 - Dados do censo de 2022: https://www.ibge.gov.br/estatisticas/downloads-estatisticas.html
 
-**OpenStreetMap:**
-- Camada de fundo: https://www.openstreetmap.org/
+**Positron:**
+- Camada de fundo: https://github.com/openmaptiles/positron-gl-style
+- **OpenStreetMap:** https://www.openstreetmap.org/
 
 ## 6. Processo de Exportação
 Feito cada procedimento para a geração das camadas:
@@ -94,4 +95,5 @@ Feito cada procedimento para a geração das camadas:
 
 ## 7. Imagem Ilustrativa
 <img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/95310ea6-5d27-4985-91c4-7b06866299c9" />
+
 

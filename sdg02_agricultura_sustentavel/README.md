@@ -58,6 +58,5 @@ https://brasil.mapbiomas.org/#  Acesso em 23/11/25.
 https://www.ibge.gov.br/geociencias/organizacao-do-territorio/divisao-regional/15778-divisoes-regionais-do-brasil.html  Acesso em 23/11/25.
 https://www.embrapa.br/publicacoes-e-bibliotecas Acesso em 23/11/25.
 https://dadosabertos.curitiba.pr.gov.br/ Acesso em 28/11/25.
-fontes
 
 BRUNA LOEFFLER, 05/12/2025

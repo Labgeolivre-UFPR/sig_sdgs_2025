@@ -38,6 +38,16 @@
       right: 10px;
       margin-top: 70px;
     }
+    #legend {
+      bottom: 30px;
+      left: 10px;
+      display: none;
+    }
+    .legend-item {
+      width: 30px;
+      height: 10px;
+      display: inline-block;
+    }
     #creatorBox {
       position: absolute;
       bottom: 10px;
@@ -71,8 +81,21 @@
     <label><input type="radio" name="polyLayer" value="coverage"> Cobertura dos terminais</label><br>
     <label><input type="radio" name="polyLayer" value="coverage_pop"> População das coberturas</label><br>
   </div>
+  <div class="box" id="legend">
+    <div id="lineLegend"></div>
+    <div id="polyLegend"></div>
+  </div >
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
+    function addLegend(title, category, table) {
+      var html_string = [`<b>${title}:</b><br>`];
+      for (const [colour, value] of Object.entries(table)) {
+        html_string.push(`<div class="legend-item" style="background-color:${colour};"></div> ${value}<br>`);
+      }
+      document.getElementById("legend").style.display = "block";
+      document.getElementById(category + "Legend").innerHTML = html_string.join('\n');
+    }
+
     const lineTranslator = {
       bus_size: "capacidade",
       freq_day: "periodo_geral",
@@ -80,12 +103,20 @@
       freq_off1: "periodo_fora1",
       freq_peak2: "periodo_pico2",
       freq_off2: "periodo_fora2",
-    }
+    };
+    const freqTable = {
+      "#5A0F0F": "60 +",
+      "#7A1E0F": "45 - 60",
+      "#9A3A0F": "30 - 45",
+      "#B58A0F": "15 - 30",
+      "#6F7F0F": "10 - 15",
+      "#3F6F0F": "5 - 10",
+      "#0F5A0F": "0 - 5",
+    };
 
     let activeLineLayer = null;
     let activeExtras = [];
     function switchLineLayer(layerTag) {
-      console.log(activeExtras);
       if (activeLineLayer) {
         while (activeExtras.length) {
           map.removeLayer(activeExtras.pop());
@@ -155,6 +186,28 @@
           }).addTo(map);
         }
       }
+      switch (layerTag) {
+        case "bus_size":
+          addLegend("Capacidade de passageiros", "line", {
+          "#5A0F0F": "77",
+          "#7A1E0F": "87",
+          "#9A3A0F": "93",
+          "#B58A0F": "117",
+          "#6F7F0F": "134",
+          "#0F5A0F": "230",
+          });
+          break;
+        case "freq_day": addLegend("Período de passagem (min)", "line", freqTable); break;
+        case "freq_peak1": addLegend("Período de passagem (min)", "line", freqTable); break;
+        case "freq_off1": addLegend("Período de passagem (min)", "line", freqTable); break;
+        case "freq_peak2": addLegend("Período de passagem (min)", "line", freqTable); break;
+        case "freq_off2": addLegend("Período de passagem (min)", "line", freqTable); break;
+        case "none": document.getElementById("lineLegend").innerHTML = ""; break;
+        case "tourism": document.getElementById("lineLegend").innerHTML = ""; break;
+      }
+      if (!activeLineLayer && !activePolyLayer) {
+        document.getElementById("legend").style.display = "none";
+      }
     }
     
     let activePolyLayer = null;
@@ -182,6 +235,15 @@
                 `);
               }
           }).addTo(map);
+          addLegend("Paradas por km²", "poly", {
+            "#fafafa": "1 - 10.1",
+            "#d1d1d1": "10.1 - 19.3",
+            "#a8a8a8": "19.3 - 28.4",
+            "#808080": "28.4 - 37.6",
+            "#575757": "37.6 - 46.7",
+            "#2e2e2e": "46.7 - 55.9",
+            "#050505": "55.9 - 65",
+          });
           break;
         case "coverage":
           activePolyLayer = L.geoJSON(coverageData, {
@@ -200,6 +262,7 @@
               `);
             }
           }).addTo(map);
+          document.getElementById("polyLegend").innerHTML = "";
           break;
         case "coverage_pop":
           activePolyLayer = L.geoJSON(coverageData, {
@@ -218,7 +281,20 @@
               `);
             }
           }).addTo(map);
+          addLegend("População", "poly", {
+            "#d1e6f2": "63 - 41248",
+            "#a7cadf": "41248 - 82433",
+            "#7eafcc": "82433 - 123619",
+            "#5493b9": "123619 - 164804",
+            "#2a78a6": "164804 - 205989",
+          })
           break;
+        case "none":
+          document.getElementById("polyLegend").innerHTML = "";
+          break;
+      }
+      if (!activeLineLayer && !activePolyLayer) {
+        document.getElementById("legend").style.display = "none";
       }
     }
     
@@ -257,9 +333,9 @@
     map.getPane("extraPane").style.zIndex = 550;
 
     // OSM background
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: ' Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.'
     }).addTo(map);
 
     // Layer toggle

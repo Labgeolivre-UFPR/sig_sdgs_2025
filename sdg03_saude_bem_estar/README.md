@@ -1,0 +1,65 @@
+# ODS 3 – Saúde e Bem-Estar  
+## Acessibilidade e Distribuição dos Equipamentos Públicos de Atividade Física
+
+Este mapa apresenta uma análise espacial dos equipamentos públicos de esporte e lazer no município de Curitiba, com foco na relação entre oferta, acessibilidade e desigualdades socioespaciais. As análises foram desenvolvidas no software QGIS, 
+alinhadas às metas do ODS 3, que visa promover saúde e bem-estar para todas as pessoas.
+
+---
+
+## 📌 Descrição das Análises Realizadas
+
+### 1. Distribuição dos Equipamentos
+Mapeamento e concentração dos pontos das academias ao ar livre e centros de esporte e lazer.
+
+### 2. Análise de Renda × Oferta
+Cruzamento entre a renda média dos bairros e a quantidade de equipamentos, criando um índice de vulnerabilidade socioespacial.
+
+### 3. Isócronas (Áreas de Serviço)
+Geração de áreas de acessibilidade utilizando o plugin QNEAT3, representando distâncias de deslocamento ao longo da rede viária.
+
+---
+
+## 🗂️ Fontes de Dados
+
+- **IBGE – Censos e agregados por setor/bairro**  
+  https://www.ibge.gov.br  
+
+- **Dados geográficos de Curitiba (bairros, vias, equipamentos)**  
+  Fonte: IPPUC
+
+- **Imagens de fundo (satélite)**  
+  OpenStreetMap
+  
+---
+
+## 🧭 Camadas utilizadas
+
+- Bairros de Curitiba  
+- Renda média domiciliar (Agregados IBGE)  
+- Academias ao ar livre / centros de esporte e lazer  
+- Rede viária para análise de isócronas  
+- Isócronas geradas pelo QNEAT3  
+- Kernel Density das academias  
+- Índice de vulnerabilidade socioespacial  
+
+---
+
+## 🗺️ Objetivo do Mapa
+
+Avaliar a equidade no acesso aos equipamentos públicos de atividade física e identificar áreas com maior vulnerabilidade, contribuindo para políticas alinhadas ao ODS 3 de promoção da saúde e bem-estar.
+
+---
+
+## 👩‍💻 Ferramentas Utilizadas
+
+- QGIS 
+- Plugin **QNEAT3**  
+- Processamento Vetorial (Intersect, Dissolve, Difference)  
+- Calculadora de Campos  
+- Kernel Density Estimation  
+
+---
+
+## 🌐 Mapa Publicado
+
+

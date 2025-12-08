@@ -70,9 +70,7 @@ O `index.html` do mapa web foi exportado via QGIS2Web e inclui:
 ## 4. Acesse o mapa publicado
 
 🔗 **Mapa Web (GitHub Pages):**  
-`https://SEU_USUARIO.github.io/SEU_REPOSITORIO/SUA_PASTA/`
-
-> Substitua o link acima conforme o caminho real do seu repositório/pasta.
+`https://labgeolivreufpr.github.io/sig_sdgs_2025/Luiggi%20e%20Elian%20ODS%206%2011%2013%2015/`
 
 ---
 
@@ -103,9 +101,10 @@ Fluxo utilizado:
 
 ## 8. Observações finais
 
-- O mapa inicia com algumas camadas ligadas (heatmap + divisas + hidrobacias) e a legenda é ajustada automaticamente.  
+- O mapa inicia com algumas camadas ligadas (heatmap + divisas + hidrobacias) e a legenda é ajustada automaticamente. (Ligar duas camadas e desligar a que você não quer que apareça caso apresente erro) 
 - No `index.html`, os **pop-ups foram desabilitados** (navegação focada em leitura temática).  
 - Recomendações gerais (nomes sem acentos/espaços, garantir funcionamento no GitHub Pages etc.).
+- O Nome para as camadas de Hidrografia e Edificações em APP está trocado mas será corrigido
 
 ---
 

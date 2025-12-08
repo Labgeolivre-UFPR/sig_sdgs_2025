@@ -7,11 +7,15 @@
 
 ---
 
+## 🌍 Acesso Online
+
+🔗 **[Clique aqui para visualizar o Mapa Interativo (WebGIS)](https://labgeolivre.github.io/sig_sdgs_2025/sdg11_cidades_sustentaveis/)**
+
+---
+
 ## 🗺️ Sobre o Projeto
 
 Este projeto tem como objetivo avaliar a infraestrutura cicloviária de Curitiba utilizando técnicas de Geoprocessamento e Análise Espacial. O foco é identificar vazios urbanos, áreas com barreiras físicas (relevo) e medir a acessibilidade temporal aos terminais de transporte público, promovendo a integração intermodal.
-
-O resultado final é um WebGIS interativo composto por três mapas temáticos.
 
 ---
 

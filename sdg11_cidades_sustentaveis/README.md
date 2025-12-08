@@ -2,14 +2,12 @@
 **Análise de Adequabilidade e Acessibilidade Cicloviária em Curitiba/PR**
 
 **Aluno:** Halan Patrick Pereira Nowak  
-**Curso:** Engenharia Cartográfica e de Agrimensura  
-**Disciplina:** Sistemas de Informações Geográficas (SIG)
 
 ---
 
 ## 🌍 Acesso Online
 
-🔗 **[Clique aqui para visualizar o Mapa Interativo (WebGIS)](https://labgeolivre.github.io/sig_sdgs_2025/sdg11_cidades_sustentaveis/)**
+🔗 **[Clique aqui para visualizar o Mapa Interativo (WebGIS)](https://labgeolivreufpr.github.io/sig_sdgs_2025/sdg11_cidades_sustentaveis/)**
 
 ---
 
@@ -70,3 +68,4 @@ O mapa web foi gerado utilizando o plugin **QGIS2Web** (biblioteca Leaflet), com
 * Menu de navegação estilo "Dock".
 * Gerenciador de legendas dinâmicas.
 * Painel lateral informativo.
+

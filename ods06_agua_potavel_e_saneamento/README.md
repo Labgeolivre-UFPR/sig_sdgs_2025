@@ -69,11 +69,3 @@ https://ippuc.org.br/geodownloads/geo.htm
 
 -Poços Tabulares – Base fornecida pela disciplina de SIG (2025)
 https://siagasweb.sgb.gov.br/layout/pesquisa_complexa.php
-
-
-6. Links dos Mapas Publicados
-
-
-🔗 Mapa 1:
-🔗 Mapa 2:
-🔗 Mapa 3:

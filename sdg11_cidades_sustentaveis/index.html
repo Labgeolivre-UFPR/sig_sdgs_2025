@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <title>ODS 11 - Mobilidade Cicloviária Curitiba</title>
+        
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet.photon.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        /* --- 1. BARRA SUPERIOR (CABEÇALHO) --- */
+        #top-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: rgba(30, 30, 30, 0.95);
+            color: white;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+        #top-header h1 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        #btn-general-info {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        #btn-general-info:hover { background-color: #0056b3; transform: translateY(-2px); }
+
+        /* --- 2. MENU DE NAVEGAÇÃO (DOCK INFERIOR - SIMÉTRICO) --- */
+        #map-switcher {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            gap: 15px; 
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .map-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            user-select: none;
+            min-width: 140px;
+            flex: 1;
+        }
+        
+        .map-btn:hover { background: #f0f0f0; }
+        
+        /* Estilos Ativos */
+        .map-btn.active[data-map="mapa1"] { background: #e3f2fd; color: #1976d2; border-color: #1976d2; }
+        .map-btn.active[data-map="mapa2"] { background: #e8f5e9; color: #388e3c; border-color: #388e3c; }
+        .map-btn.active[data-map="mapa3"] { background: #ffebee; color: #d32f2f; border-color: #d32f2f; }
+        
+        .map-btn i { font-size: 18px; }
+
+        /* --- 3. PAINEL LATERAL ESQUERDO (Descrição) --- */
+        #left-panel {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+            border-left: 5px solid #007bff;
+            transition: border-color 0.3s ease;
+        }
+        #left-panel h2 { font-size: 16px; margin-top: 0; color: #007bff; margin-bottom: 15px; transition: color 0.3s ease; }
+        #left-panel p { font-size: 13px; color: #333; line-height: 1.5; }
+        .methodology-tag { background: #eee; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; color: #555; }
+        
+        /* Box de Nota Técnica / Dica */
+        .info-box {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .info-box strong { display: block; margin-bottom: 5px; }
+
+        /* --- 4. CONTROLE DE CAMADAS (Direita-Meio) --- */
+        #layer-control {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 220px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        #layer-control h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .layer-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+        }
+        .layer-item input { margin-right: 10px; cursor: pointer; }
+        .layer-item:hover { color: #000; }
+
+        /* --- 5. LEGENDA FLUTUANTE (Direita-Baixo) --- */
+        #floating-legend {
+            position: absolute;
+            bottom: 110px;
+            right: 20px;
+            z-index: 9000;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none; 
+            max-width: 200px;
+        }
+        #floating-legend img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
+
+        /* --- 6. MODAL GERAL --- */
+        #general-info-modal {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            max-height: 80vh;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 2001;
+            overflow-y: auto;
+        }
+        #general-info-modal h2 { margin-top: 0; color: #333; font-size: 22px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        #general-info-modal h3 { font-size: 16px; color: #555; margin-top: 20px; }
+        #general-info-modal p { font-size: 14px; line-height: 1.6; color: #666; text-align: justify; }
+        .close-modal { float: right; cursor: pointer; font-size: 24px; color: #999; margin-top: -10px;}
+        .close-modal:hover { color: red; }
+
+        @media (max-width: 800px) {
+            #map-switcher { width: 90%; flex-direction: column; bottom: 10px; gap: 5px;}
+            .map-btn { width: 100%; min-width: auto; padding: 8px; }
+            #left-panel { display: none; }
+            #layer-control { top: 70px; right: 10px; width: 180px; }
+            #general-info-modal { width: 90%; top: 60px; }
+        }
+        </style>
+    </head>
+    <body>
+        
+        <div id="top-header">
+            <h1>ODS 11 - Cidades Sustentáveis: Curitiba</h1>
+            <button id="btn-general-info" onclick="toggleGeneralInfo()">Sobre o Projeto</button>
+        </div>
+
+        <div id="map-switcher">
+            <div class="map-btn active" data-map="mapa1" onclick="switchMap('mapa1')">
+                <i class="fas fa-bicycle"></i> <span>Adequabilidade</span>
+            </div>
+            <div class="map-btn" data-map="mapa2" onclick="switchMap('mapa2')">
+                <i class="fas fa-stopwatch"></i> <span>Acessibilidade</span>
+            </div>
+            <div class="map-btn" data-map="mapa3" onclick="switchMap('mapa3')">
+                <i class="fas fa-mountain"></i> <span>Esforço Físico</span>
+            </div>
+        </div>
+
+        <div id="layer-control">
+            <h3>Camadas Ativas</h3>
+            <div id="layer-list-container"></div>
+        </div>
+
+        <div id="general-info-modal" style="display: block;">
+            <span class="close-modal" onclick="toggleGeneralInfo()">&times;</span>
+            <h2>Resumo do Projeto</h2>
+            <p>Este trabalho analisa a infraestrutura cicloviária de Curitiba/PR sob a ótica do <strong>ODS 11 (Cidades e Comunidades Sustentáveis)</strong>. O objetivo é identificar áreas prioritárias para expansão da malha e avaliar a acessibilidade atual.</p>
+            
+            <h3>Materiais e Dados</h3>
+            <p>Foram utilizados dados vetoriais de eixos de logradouros e ciclovias do portal do <strong>IPPUC Curitiba</strong>. Os dados de densidade populacional foram extraídos do <strong>Censo IBGE 2022</strong>. Para análise altimétrica, utilizou-se o Modelo Digital de Terreno (MDT) do projeto Topodata/SRTM. Todo o processamento foi realizado no software <strong>QGIS 3.34.5</strong>.</p>
+            
+            <h3>Conclusão Geral</h3>
+            <p>A análise revela uma forte correlação entre áreas planas e infraestrutura existente, porém aponta vazios de cobertura em regiões densas e periféricas, onde o relevo acidentado exige soluções intermodais (integração bicicleta-ônibus).</p>
+            <p><strong>Aluno:</strong> Halan Patrick Pereira Nowak</p>
+        </div>
+
+        <div id="left-panel">
+            <h2 id="panel-title">Carregando...</h2>
+            <div id="panel-content">Selecione um mapa no menu abaixo.</div>
+        </div>
+
+        <div id="floating-legend">
+            <img id="legend-image" src="" alt="Legenda">
+        </div>
+
+        <div id="map"></div>
+        
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.photon.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/fundo_0.js"></script>
+        <script src="data/ZonalStatistics_2.js"></script>
+        <script src="data/TERMINAL_DE_TRANSPORTE_3.js"></script>
+        <script src="data/Contorno_5.js"></script>
+        <script src="data/CICLOVIA_OFICIAL_6.js"></script>
+        
+        <script>
+        // --- 1. CONFIGURAÇÃO DO MAPA ---
+        // zoomControl: false -> Remove os botões + e -
+        var map = L.map('map', { zoomControl:false, maxZoom:28, minZoom:11 });
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('Leaflet &middot; QGIS');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        
+        // --- 2. BASEMAP ---
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // --- 3. DEFINIÇÃO DAS CAMADAS (LAYERS) ---
+        function pop_generic(feature, layer, propName, label) {
+            var val = feature.properties[propName];
+            var txt = val !== null ? val.toLocaleString() : '';
+            layer.bindPopup('<b>'+label+'</b><br>' + txt);
+        }
+
+        // >>> MAPA 3
+        function style_fundo_0_0() { return {pane: 'pane_fundo_0', opacity: 1, color: 'rgba(35,35,35,1.0)', fill: true, fillOpacity: 1, fillColor: 'rgba(0,0,0,1.0)', interactive: false}; }
+        map.createPane('pane_fundo_0'); map.getPane('pane_fundo_0').style.zIndex = 400;
+        var layer_fundo_0 = new L.geoJson(json_fundo_0, {pane: 'pane_fundo_0', style: style_fundo_0_0});
+        
+        map.createPane('pane_EIXO_1'); map.getPane('pane_EIXO_1').style.zIndex = 401;
+        var layer_EIXO_1 = new L.imageOverlay('data/EIXO_1.png', [[-25.642844,-49.389933],[-25.344869,-49.183746]], {pane: 'pane_EIXO_1'});
+
+        // >>> MAPA 2
+        function style_ZonalStatistics_2_0(feature) {
+             var val = feature.properties['minutos_bike'];
+             var color = '#808080';
+             if (val <= 5) color = '#2b83ba';
+             else if (val <= 10) color = '#abdda4';
+             else if (val <= 20) color = '#fdae61';
+             else if (val <= 30) color = '#d7191c';
+             return {pane: 'pane_ZonalStatistics_2', color: '#333', weight:1, fillOpacity:0.8, fillColor: color};
+        }
+        map.createPane('pane_ZonalStatistics_2'); map.getPane('pane_ZonalStatistics_2').style.zIndex = 402;
+        var layer_ZonalStatistics_2 = new L.geoJson(json_ZonalStatistics_2, {
+            pane: 'pane_ZonalStatistics_2', 
+            style: style_ZonalStatistics_2_0,
+            onEachFeature: function(f,l){ pop_generic(f,l,'minutos_bike','Tempo (min)'); }
+        });
+
+        map.createPane('pane_TERMINAL_DE_TRANSPORTE_3'); map.getPane('pane_TERMINAL_DE_TRANSPORTE_3').style.zIndex = 403;
+        var layer_TERMINAL_DE_TRANSPORTE_3 = new L.geoJson(json_TERMINAL_DE_TRANSPORTE_3, {
+            pane: 'pane_TERMINAL_DE_TRANSPORTE_3',
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {icon: L.icon({ iconUrl: 'markers/TERMINAL_DE_TRANSPORTE_3.svg', iconSize: [20, 20] })});
+            },
+            onEachFeature: function(f,l){ pop_generic(f,l,'NOME_COMPL','Terminal'); }
+        });
+
+        // >>> MAPA 1
+        map.createPane('pane_ADEQUACAO_4'); map.getPane('pane_ADEQUACAO_4').style.zIndex = 404;
+        var layer_ADEQUACAO_4 = new L.imageOverlay('data/ADEQUACAO_4.png', [[-25.645578,-49.390393],[-25.344099,-49.182790]], {pane: 'pane_ADEQUACAO_4'});
+
+        map.createPane('pane_Contorno_5'); map.getPane('pane_Contorno_5').style.zIndex = 405;
+        var layer_Contorno_5 = new L.geoJson(json_Contorno_5, {pane: 'pane_Contorno_5', style: {color: '#333', fill: false, weight: 1}, interactive: false});
+        
+        map.createPane('pane_CICLOVIA_OFICIAL_6'); map.getPane('pane_CICLOVIA_OFICIAL_6').style.zIndex = 406;
+        var layer_CICLOVIA_OFICIAL_6 = new L.geoJson(json_CICLOVIA_OFICIAL_6, {pane: 'pane_CICLOVIA_OFICIAL_6', style: {color: 'black', weight: 2}, interactive: false});
+
+        map.fitBounds([[-25.64,-49.39],[-25.34,-49.18]]);
+
+        // Pré-carregamento imagens
+        new Image().src = "images/mapa1.png";
+        new Image().src = "images/mapa2.jpeg";
+        new Image().src = "images/mapa3.jpeg";
+
+
+        /* --- 4. CONFIGURAÇÃO DOS DADOS DO APP --- */
+
+        const appData = {
+            mapa1: {
+                layersData: [
+                    { layer: layer_ADEQUACAO_4, name: "Raster de Adequação", default: true },
+                    { layer: layer_CICLOVIA_OFICIAL_6, name: "Ciclovias Existentes", default: true },
+                    { layer: layer_Contorno_5, name: "Limites de Curitiba", default: true }
+                ],
+                title: "Mapa 01: Índice de Adequabilidade",
+                // Texto com Análise MCDA
+                desc: "<strong>Metodologia (MCDA):</strong> Este mapa foi gerado através de uma Análise Multicritério. Foram cruzadas três variáveis principais: <br><br>1. <strong>Declividade:</strong> Áreas planas receberam nota 10.<br>2. <strong>Densidade Populacional:</strong> Áreas mais densas receberam peso maior.<br>3. <strong>Destinos:</strong> Proximidade de escolas e comércios.<br><br>O resultado (0 a 10) indica onde é mais propício implantar novas ciclovias. As áreas em <strong>Azul</strong> são as ideais.",
+                legend: "images/mapa1.png",
+                color: "#1976d2"
+            },
+            mapa2: {
+                layersData: [
+                    { layer: layer_ZonalStatistics_2, name: "Manchas de Tempo", default: true },
+                    { layer: layer_TERMINAL_DE_TRANSPORTE_3, name: "Terminais de Ônibus", default: true }
+                ],
+                title: "Mapa 02: Acessibilidade Temporal",
+                // Texto com DICA DE INTERATIVIDADE
+                desc: "<strong>Metodologia (Isócronas):</strong> Utilizamos o plugin <strong>QNEAT3</strong> para calcular o tempo de deslocamento necessário para chegar <strong>até</strong> os Terminais de Ônibus partindo de cada ponto da cidade.<br><br><span class='methodology-tag'>Velocidade Média: 15 km/h</span><br><br>O mapa mostra o tempo de viagem em faixas de 5 minutos.<br><br><div class='info-box' style='background:#e8f5e9; border-left:3px solid #2e7d32; color:#1b5e20;'><strong>💡 Dica:</strong> Você pode clicar nos ícones dos ônibus para ver o nome de cada terminal.</div>",
+                legend: "images/mapa2.jpeg",
+                color: "#388e3c"
+            },
+            mapa3: {
+                layersData: [
+                    { layer: layer_EIXO_1, name: "Declividade (Raster)", default: true },
+                    { layer: layer_fundo_0, name: "Fundo Escuro", default: true }
+                ],
+                title: "Mapa 03: Esforço Físico",
+                // Texto com NOTA TÉCNICA PARA PROFESSORA
+                desc: "<strong>Metodologia (Declividade):</strong> Classificamos a rede viária de Curitiba com base na inclinação do terreno (SRTM).<br><br><ul><li><strong>Verde:</strong> Plano (0-3%) - Lazer/Trabalho.</li><li><strong>Amarelo:</strong> Moderado.</li><li><strong>Vermelho:</strong> Íngreme (>8%) - Inviável sem assistência elétrica.</li></ul><br><div class='info-box' style='background:#fff3e0; border-left:3px solid #ef6c00; color:#e65100;'><strong>⚠️ Nota Técnica:</strong> Devido à alta densidade da malha viária (+50 mil segmentos), os vetores originais foram convertidos para <strong>Raster</strong> para garantir a performance da aplicação web.</div>",
+                legend: "images/mapa3.jpeg",
+                color: "#d32f2f"
+            }
+        };
+
+        // --- 5. LÓGICA DE TROCA E GERENCIAMENTO DE CAMADAS ---
+
+        function switchMap(mapKey) {
+            var currentMap = appData[mapKey];
+
+            // 1. Limpa Layers
+            [layer_fundo_0, layer_EIXO_1, layer_ZonalStatistics_2, layer_TERMINAL_DE_TRANSPORTE_3, layer_ADEQUACAO_4, layer_Contorno_5, layer_CICLOVIA_OFICIAL_6].forEach(l => {
+                if(map.hasLayer(l)) map.removeLayer(l);
+            });
+
+            // 2. Adiciona Layers Padrão
+            currentMap.layersData.forEach(item => {
+                if (item.default) map.addLayer(item.layer);
+            });
+
+            // 3. Atualiza Interface
+            document.getElementById('panel-title').innerText = currentMap.title;
+            document.getElementById('panel-content').innerHTML = currentMap.desc;
+            
+            var leftPanel = document.getElementById('left-panel');
+            leftPanel.style.borderLeftColor = currentMap.color;
+            leftPanel.querySelector('h2').style.color = currentMap.color;
+            
+            var legendImg = document.getElementById('legend-image');
+            legendImg.src = currentMap.legend;
+            document.getElementById('floating-legend').style.display = 'block';
+
+            // 4. Atualiza Botões
+            document.querySelectorAll('.map-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.dataset.map === mapKey) btn.classList.add('active');
+            });
+
+            // 5. Gera Menu de Camadas
+            updateLayerControl(currentMap.layersData);
+        }
+
+        function updateLayerControl(layersList) {
+            var container = document.getElementById('layer-list-container');
+            container.innerHTML = ''; 
+
+            layersList.forEach((item, index) => {
+                var div = document.createElement('div');
+                div.className = 'layer-item';
+                
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'layer-chk-' + index;
+                checkbox.checked = map.hasLayer(item.layer); 
+                
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) map.addLayer(item.layer);
+                    else map.removeLayer(item.layer);
+                });
+
+                var label = document.createElement('label');
+                label.htmlFor = 'layer-chk-' + index;
+                label.innerText = item.name;
+                label.style.cursor = 'pointer';
+
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+        }
+
+        var modal = document.getElementById('general-info-modal');
+        function toggleGeneralInfo() {
+            modal.style.display = (modal.style.display === "none") ? "block" : "none";
+        }
+
+        setTimeout(() => { switchMap('mapa1'); }, 500);
+
+        </script>        
+    </body>
+</html>

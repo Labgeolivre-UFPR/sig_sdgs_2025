@@ -69,8 +69,7 @@ O `index.html` do mapa web foi exportado via QGIS2Web e inclui:
 
 ## 4. Acesse o mapa publicado
 
-🔗 **Mapa Web (GitHub Pages):**  
-`https://labgeolivreufpr.github.io/sig_sdgs_2025/Luiggi%20e%20Elian%20ODS%206%2011%2013%2015/`
+🔗 **[Mapa Web (GitHub Pages)](https://labgeolivreufpr.github.io/sig_sdgs_2025/Luiggi%20e%20Elian%20ODS%206%2011%2013%2015/)**
 
 ---
 

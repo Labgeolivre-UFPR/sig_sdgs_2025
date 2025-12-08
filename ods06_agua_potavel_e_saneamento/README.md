@@ -97,3 +97,7 @@ https://ippuc.org.br/geodownloads/geo.htm
 
 - Poços Tabulares – Base fornecida pela disciplina de SIG (2025)
 https://siagasweb.sgb.gov.br/layout/pesquisa_complexa.php
+
+#### Acesso aos mapas
+
+- Mapa 03: https://labgeolivreufpr.github.io/sig_sdgs_2025/ods06_agua_potavel_e_saneamento/Distribui%C3%A7%C3%A3o%20Espacial%20e%20%C3%81reas%20de%20Abrang%C3%AAncia%20dos%20Po%C3%A7os%20Tubulares%20em%20Curitiba/#12/-25.4707/-49.2816
